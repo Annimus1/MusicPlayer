@@ -4,10 +4,8 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import org.jaudiotagger.audio.mp3.MP3File;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 
 public class MusicPlayer extends PlaybackListener {
@@ -38,7 +36,7 @@ public class MusicPlayer extends PlaybackListener {
 
         try{
             /* Read mp3 audio data */
-            FileInputStream fileInputStream = new FileInputStream(new File(this.currentSong.getFilepath()));
+            FileInputStream fileInputStream = new FileInputStream(this.currentSong.getFilepath());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 
             /* Create a new advanced player */
@@ -47,7 +45,7 @@ public class MusicPlayer extends PlaybackListener {
 
             startMusicThreat();
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 
@@ -69,20 +67,17 @@ public class MusicPlayer extends PlaybackListener {
     }
 
     public void startMusicThreat(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (isPaused){
-                     /* Resume music */
-                        advancedPlayer.play(getPausedOnFrame(),Integer.MAX_VALUE);
-                    }else{
-                        /* Play music from the beginning */
-                        advancedPlayer.play();
-                    }
-                } catch (JavaLayerException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            try {
+                if (isPaused){
+                 /* Resume music */
+                    advancedPlayer.play(getPausedOnFrame(),Integer.MAX_VALUE);
+                }else{
+                    /* Play music from the beginning */
+                    advancedPlayer.play();
                 }
+            } catch (JavaLayerException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }

@@ -3,18 +3,16 @@ package org.example;
 import com.mpatric.mp3agic.Mp3File;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
-import java.lang.reflect.Type;
 
 public class Song{
     private String title;
     private String artist;
     private String duration;
-    private String filepath;
+    private final String filepath;
     private Mp3File mp3File;
     private double frameRatePerMilliseconds;
 
@@ -42,7 +40,7 @@ public class Song{
                 this.artist = "Unknown";
             }
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 
@@ -69,8 +67,6 @@ public class Song{
     private String convertToSongLengthFormat(){
         long minutes = mp3File.getLengthInSeconds() / 60;
         long seconds = mp3File.getLengthInSeconds() % 60;
-        String formatedTime = String.format("%02d:%02d",minutes,seconds);
-
-        return formatedTime;
+        return String.format("%02d:%02d",minutes,seconds);
     }
 }

@@ -6,11 +6,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Hashtable;
 
-public class Music_Player_GUI extends JFrame implements ActionListener {
+public class Music_Player_GUI extends JFrame {
 
     private final Color BACKGROUD_COLOR = Color.WHITE;
     private JMenuItem loadSong;
@@ -46,7 +48,7 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
 
         getContentPane().setBackground(BACKGROUD_COLOR);
 
-        musicPlayer = new MusicPlayer();
+        musicPlayer = new MusicPlayer(this);
 
         /* Add all components */
         setComponets();
@@ -83,6 +85,16 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         loadSong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                /* Handle the slice goes to 0 if another song was playing
+                *  And close last thread before start the new one */
+                if(musicPlayer.isWasPlayingSongBefore()){
+                   /* Set slider value to 0*/
+                   musicPlayer.setCurrentTimeInMillisecond(0);
+                   /* interrupt last thread */
+                   musicPlayer.stopSong();
+                }
+
+
                 File filename = getPathFromUser();
                 if(filename != null){
                     /* Create a new song */
@@ -95,6 +107,7 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
                     updatePlaybackSlider(song);
                     /* Load the new song into the MusicPlayer */
                     musicPlayer.loadSong(song);
+                    musicPlayer.toggleWasPlayingSongBefore(true);
                 }
             }
         });
@@ -121,9 +134,6 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         add(toolBar);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
     private File getPathFromUser(){
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -177,6 +187,35 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         /* Insert the Slider with the width and height */
         slider.setBounds(0,400,getWidth(),40);
         slider.setBackground(null);
+        slider.setValue(0);
+        slider.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                /* When the user holds the slider*/
+                musicPlayer.pauseMusic();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                /* When the user drops the slider */
+                JSlider source = (JSlider) e.getSource();
+
+                /* Get the frame the user wants from the playback */
+                int frame = source.getValue();
+
+                /* Update the current frame in the music player to its frame */
+                musicPlayer.setCurrentFrame(frame);
+
+                /* update the current time in miliseconds */
+                musicPlayer.setCurrentTimeInMillisecond((int) (frame/(2.08 * musicPlayer.getCurrentSong().getFrameRatePerMilliseconds())));
+
+                /* Resume the song */
+                musicPlayer.playCurrentSong();
+                if(play.isVisible()){
+                    togglePlayPause();
+                }
+            }
+        });
         add(slider);
 
         /* Create container for Controls */
@@ -191,7 +230,6 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         list.setBorder(null);
         list.setBackground(null);
         list.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        list.addActionListener(this);
 
         /* Create rev btn */
         prev = new JButton(loadImage("src/main/java/assets/Prev.png"));
@@ -227,12 +265,13 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         play.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(musicPlayer.getCurrentSong() != null ){
                 /* Toggle buttons*/
                 togglePlayPause();
 
                 /* Play or resume song */
                 musicPlayer.playCurrentSong();
-            }
+            }}
         });
 
         /* Create Next btn */
@@ -241,7 +280,6 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         next.setBorder(null);
         next.setBackground(null);
         next.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        next.addActionListener(this);
 
         /* Create loop btn */
         loop = new JButton(loadImage("src/main/java/assets/Loop.png"));
@@ -249,7 +287,6 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         loop.setBorder(null);
         loop.setBackground(null);
         loop.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loop.addActionListener(this);
 
         /* Add Buttons to the container*/
         controls.add(list);
@@ -300,8 +337,9 @@ public class Music_Player_GUI extends JFrame implements ActionListener {
         slider.setPaintLabels(true);
     }
 
+    /* This will be used to update the slider*/
     public void setSliderValue( int frame){
-
+        slider.setValue(frame);
     }
 
 }

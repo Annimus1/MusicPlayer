@@ -18,7 +18,7 @@ public class Music_Player_GUI extends JFrame {
     private MusicPlayer musicPlayer;
     private JButton pause;
     private JButton play;
-    private final JLabel songTitle = new JLabel("Song Title");
+        private final JLabel songTitle = new JLabel("Song Title");
     private final JLabel artist = new JLabel("Artist");
     private final JSlider slider = new JSlider();
 
@@ -258,6 +258,14 @@ public class Music_Player_GUI extends JFrame {
         prev.setBorder(null);
         prev.setBackground(null);
         prev.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        prev.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(musicPlayer.prevSong()){
+                    EnablePauseBtn();
+                }
+            }
+        });
 
         /* Create pause btn */
         pause = new JButton(loadImage("src/main/MusicPlayer/assets/Pause.png"));
@@ -301,6 +309,14 @@ public class Music_Player_GUI extends JFrame {
         next.setBorder(null);
         next.setBackground(null);
         next.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        next.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(musicPlayer.nextSong()){
+                    EnablePauseBtn();
+                }
+            }
+        });
 
         /* Create loop btn */
         JButton loop = new JButton(loadImage("src/main/MusicPlayer/assets/Loop.png"));
@@ -308,6 +324,17 @@ public class Music_Player_GUI extends JFrame {
         loop.setBorder(null);
         loop.setBackground(null);
         loop.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                musicPlayer.toggleLoop();
+                if(musicPlayer.getIsLoop()){
+                    loop.setBackground(Color.GRAY);
+                }else{
+                    loop.setBackground(null);
+                }
+            }
+        });
 
         /* Add Buttons to the container*/
         controls.add(list);

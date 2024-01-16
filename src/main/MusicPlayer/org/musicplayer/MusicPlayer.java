@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class MusicPlayer extends PlaybackListener {
+
     /* Create an object to help synchronize the threads */
     private static final Object playSignal = new Object();
     /* this will store the details of the current song. */
@@ -16,6 +17,9 @@ public class MusicPlayer extends PlaybackListener {
     /* Create a Player to handle the music using JavaLayer library */
     private AdvancedPlayer advancedPlayer;
     private int pausedOnFrame = 0;
+    /* Controlls if the song play in a infinite loop*/
+    private boolean isloop;
+    public boolean getIsLoop(){return this.isloop;}
     public void setCurrentFrame(int frame){
         this.pausedOnFrame = frame;
     }
@@ -81,6 +85,8 @@ public class MusicPlayer extends PlaybackListener {
 
             /* Start song */
             playCurrentSong();
+
+            System.out.println(playlist.indexOf(currentSong));
         }
 
     }
@@ -199,6 +205,25 @@ public class MusicPlayer extends PlaybackListener {
         if(isPaused){
            pausedOnFrame += (int) ( (double) evt.getFrame() * currentSong.getFrameRatePerMilliseconds());
         }
+        else if(isloop){
+            System.out.println("La cancion termino");
+            /* Stop the current song */
+            this.isPaused = false;
+            /* Restart the song */
+            this.currentTimeInMillisecond = 0;
+            this.pausedOnFrame = 0;
+            MusicPlayerGUI.setSliderValue(0);
+            playCurrentSong();
+        }
+    }
+
+    public void toggleLoop(){
+        if(currentSong != null) {
+            this.isloop = !this.isloop;
+            System.out.println(this.isloop);
+        }else{
+            this.isloop = false;
+        }
     }
 
     public boolean isWasPlayingSongBefore() {return wasPlayingSongBefore;}
@@ -208,5 +233,73 @@ public class MusicPlayer extends PlaybackListener {
     public void setCurrentTimeInMillisecond(int currentTimeInMillisecond) {this.currentTimeInMillisecond = currentTimeInMillisecond;}
 
     public Song getCurrentSong() {return currentSong;}
+
+    public boolean nextSong(){
+        if (playlist == null) return false;
+
+        if(playlist.size() > 0 ){
+            /* stop the music */
+            stopSong();
+
+            /* Set the slider to value 0*/
+            MusicPlayerGUI.setSliderValue(0);
+
+            if(playlist.indexOf(this.currentSong)+1 >= playlist.size()){
+                /* Update current song with the first one on the playlist */
+                this.currentSong = playlist.getFirst();
+            }else{
+                /* Update current song with the first one on the playlist */
+                this.currentSong = playlist.get(playlist.indexOf(currentSong)+1);
+            }
+            this.currentTimeInMillisecond = 0;
+
+            /* Start from the beginning frame  */
+            this.pausedOnFrame= 0;
+
+            /*Update GUI*/
+            MusicPlayerGUI.EnablePauseBtn();
+            MusicPlayerGUI.updateSongInfo(this.currentSong);
+            MusicPlayerGUI.updatePlaybackSlider(this.currentSong);
+
+            /* Start song */
+            playCurrentSong();
+
+            System.out.println(playlist.indexOf(currentSong));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean prevSong(){
+        if(playlist.size() > 0 ){
+            /* stop the music */
+            stopSong();
+
+            /* Set the slider to value 0*/
+            MusicPlayerGUI.setSliderValue(0);
+
+            if(playlist.indexOf(this.currentSong)-1 < 0){
+                /* Update current song with the first one on the playlist */
+                this.currentSong = playlist.getLast();
+            }else{
+                /* Update current song with the first one on the playlist */
+                this.currentSong = playlist.get(playlist.indexOf(currentSong)-1);
+            }
+            this.currentTimeInMillisecond = 0;
+
+            /* Start from the beginning frame  */
+            this.pausedOnFrame= 0;
+
+            /*Update GUI*/
+            MusicPlayerGUI.EnablePauseBtn();
+            MusicPlayerGUI.updateSongInfo(this.currentSong);
+            MusicPlayerGUI.updatePlaybackSlider(this.currentSong);
+
+            /* Start song */
+            playCurrentSong();
+            return true;
+        }
+        return false;
+    }
 }
 

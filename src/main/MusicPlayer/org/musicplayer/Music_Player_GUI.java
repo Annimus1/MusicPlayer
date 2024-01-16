@@ -1,4 +1,4 @@
-package org.example;
+package org.musicplayer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,17 +13,11 @@ import java.io.File;
 import java.util.Hashtable;
 
 public class Music_Player_GUI extends JFrame {
-
-    private final Color BACKGROUD_COLOR = Color.WHITE;
+    public static final Color BACKGROUD_COLOR = Color.WHITE;
     private JMenuItem loadSong;
     private MusicPlayer musicPlayer;
-    private JButton list;
-    private JButton prev;
     private JButton pause;
     private JButton play;
-    private JButton next;
-    private JButton loop;
-
     private final JLabel songTitle = new JLabel("Song Title");
     private final JLabel artist = new JLabel("Artist");
     private final JSlider slider = new JSlider();
@@ -33,12 +27,12 @@ public class Music_Player_GUI extends JFrame {
         /* Setting the window icon */
         try {
             /* Load the icon from the path */
-            Image icon = ImageIO.read( new File("src/main/java/assets/Icon.png"));
-            /* assign the imagen to the Frame */
+            Image icon = ImageIO.read( new File("src/main/MusicPlayer/assets/Icon.png"));
+            /* assign the image to the Frame */
             setIconImage(icon);
         }
         catch(Exception e){
-            System.out.println("Coudn't load the icon");
+            System.out.println("Couldn't load the icon");
         }
         setSize(400,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,17 +45,17 @@ public class Music_Player_GUI extends JFrame {
         musicPlayer = new MusicPlayer(this);
 
         /* Add all components */
-        setComponets();
+        setComponents();
     }
 
-    private void setComponets(){
-        /* Insert the tool bar */
+    private void setComponents(){
+        /* Insert the toolbar */
         setToolBar();
         /* Inset cover image */
         setCover();
         /* Insert information of the current song*/
         setSongInfo();
-        /* Insert Control seccion */
+        /* Insert Control section */
         setControls();
     }
 
@@ -113,20 +107,47 @@ public class Music_Player_GUI extends JFrame {
         });
         songMenu.add(loadSong);
 
-        /* Create menu to upload a song */
-        JMenu playlistMenu = new JMenu("Playlist");
         /* Create items */
-        JMenuItem loadPlaylist = new JMenuItem("Load Playlist");
+        /* Create menu to add a song */
         JMenuItem addPlaylist = new JMenuItem("Add Playlist");
+        addPlaylist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                /* Create the dialog */
+                new MusicPlayerDialog(Music_Player_GUI.this).setVisible(true);
+            }
+        });
+
+        /* Create menu to load a song */
+        JMenuItem loadPlaylist = new JMenuItem("Load Playlist");
+        JMenu playlistMenu = new JMenu("Playlist");
+        loadPlaylist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(new FileNameExtensionFilter("Playlist","txt"));
+                int result = fileChooser.showOpenDialog(Music_Player_GUI.this);
+                File selectedFile = fileChooser.getSelectedFile();
+
+                if(selectedFile != null && JFileChooser.APPROVE_OPTION == result){
+                    /* Stop the music */
+                    musicPlayer.stopSong();
+
+                    /* Load Playlist */
+                    musicPlayer.loadPlaylist(selectedFile);
+                }
+            }
+        });
+
         /* Add items to the dropbox */
         playlistMenu.add(addPlaylist);
         playlistMenu.add(loadPlaylist);
 
-        /* Adding dropboxs to the menu bar*/
+        /* Adding drop boxes to the menu bar*/
         menuBar.add(songMenu);
         menuBar.add(playlistMenu);
 
-        /* Add menu bar to the tool bar */
+        /* Add menu bar to the toolbar */
         toolBar.add(menuBar);
 
 
@@ -146,7 +167,7 @@ public class Music_Player_GUI extends JFrame {
         return null;
     }
     private void setCover(){
-        JLabel canvas = new JLabel(loadImage("src/main/java/assets/Cover.png"));
+        JLabel canvas = new JLabel(loadImage("src/main/MusicPlayer/assets/Cover.png"));
         canvas.setBounds(0,20,getWidth(),300);
         canvas.setBackground(null);
         add(canvas);
@@ -161,7 +182,7 @@ public class Music_Player_GUI extends JFrame {
             return new ImageIcon(image);
         }
         catch (Exception e){
-            /* It menas it can't read the file or it doesn't exist. So print the error Stack Trace*/
+            /* It means it can't read the file, or it doesn't exist. So print the error Stack Trace*/
             System.out.println("Couldn't load the image from path: " + imagePath);
         }
         return null;
@@ -206,7 +227,7 @@ public class Music_Player_GUI extends JFrame {
                 /* Update the current frame in the music player to its frame */
                 musicPlayer.setCurrentFrame(frame);
 
-                /* update the current time in miliseconds */
+                /* update the current time in milliseconds */
                 musicPlayer.setCurrentTimeInMillisecond((int) (frame/(2.08 * musicPlayer.getCurrentSong().getFrameRatePerMilliseconds())));
 
                 /* Resume the song */
@@ -225,21 +246,21 @@ public class Music_Player_GUI extends JFrame {
 
         /* Creating controls */
         /* Create List btn */
-        list = new JButton(loadImage("src/main/java/assets/List.png"));
+        JButton list = new JButton(loadImage("src/main/MusicPlayer/assets/List.png"));
         list.setToolTipText("Playlist");
         list.setBorder(null);
         list.setBackground(null);
         list.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         /* Create rev btn */
-        prev = new JButton(loadImage("src/main/java/assets/Prev.png"));
+        JButton prev = new JButton(loadImage("src/main/MusicPlayer/assets/Prev.png"));
         prev.setToolTipText("Prev. Song");
         prev.setBorder(null);
         prev.setBackground(null);
         prev.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         /* Create pause btn */
-        pause = new JButton(loadImage("src/main/java/assets/Pause.png"));
+        pause = new JButton(loadImage("src/main/MusicPlayer/assets/Pause.png"));
         pause.setToolTipText("Pause.");
         pause.setBorder(null);
         pause.setBackground(null);
@@ -256,7 +277,7 @@ public class Music_Player_GUI extends JFrame {
         });
 
         /* Create play btn */
-        play = new JButton(loadImage("src/main/java/assets/Play.png"));
+        play = new JButton(loadImage("src/main/MusicPlayer/assets/Play.png"));
         play.setToolTipText("Play");
         play.setBorder(null);
         play.setBackground(null);
@@ -275,14 +296,14 @@ public class Music_Player_GUI extends JFrame {
         });
 
         /* Create Next btn */
-        next = new JButton(loadImage("src/main/java/assets/Next.png"));
+        JButton next = new JButton(loadImage("src/main/MusicPlayer/assets/Next.png"));
         next.setToolTipText("Next Song");
         next.setBorder(null);
         next.setBackground(null);
         next.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         /* Create loop btn */
-        loop = new JButton(loadImage("src/main/java/assets/Loop.png"));
+        JButton loop = new JButton(loadImage("src/main/MusicPlayer/assets/Loop.png"));
         loop.setToolTipText("Play in Loop");
         loop.setBorder(null);
         loop.setBackground(null);
@@ -306,18 +327,16 @@ public class Music_Player_GUI extends JFrame {
         play.setVisible(!play.isVisible());
     }
 
-    private void updateSongInfo(Song song){
-
-
+    public void updateSongInfo(Song song){
         songTitle.setText((song.getTitle() != "") ? song.getTitle() : "Unknown");
         artist.setText((song.getArtist() != "") ? song.getArtist() : "Unknown");
     }
 
-    private void updatePlaybackSlider(Song song){
+    public void updatePlaybackSlider(Song song){
         /* update max count of the slider */
         slider.setMaximum(song.getMp3File().getFrameCount());
 
-        /* Create a song lengh label */
+        /* Create a song length label */
         Hashtable<Integer,JLabel> labelTable = new Hashtable<>();
 
         /* Begins in 00:00 */
@@ -340,6 +359,16 @@ public class Music_Player_GUI extends JFrame {
     /* This will be used to update the slider*/
     public void setSliderValue( int frame){
         slider.setValue(frame);
+    }
+
+    public void EnablePlayBtn(){
+        play.setVisible(true);
+        pause.setVisible(false);
+    }
+
+    public void EnablePauseBtn(){
+        play.setVisible(false);
+        pause.setVisible(true);
     }
 
 }

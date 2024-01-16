@@ -1,4 +1,4 @@
-package org.example;
+package org.musicplayer;
 
 import com.mpatric.mp3agic.Mp3File;
 import org.jaudiotagger.audio.AudioFile;
@@ -19,9 +19,9 @@ public class Song{
     public Song(String filepath){
         this.filepath = filepath;
         try{
-            /* We will calculate the frame rate per milisecond */
+            /* We will calculate the frame rate per millisecond */
 
-            mp3File = new Mp3File(filepath); // this give us the total lengh of the song
+            mp3File = new Mp3File(filepath); // this gives us the total length of the song
             frameRatePerMilliseconds = (double) mp3File.getFrameCount() / mp3File.getLengthInMilliseconds();
             duration = convertToSongLengthFormat();
 

@@ -1,19 +1,19 @@
-package org.example;
+package org.musicplayer;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.io.*;
+import java.util.ArrayList;
 
 public class MusicPlayer extends PlaybackListener {
-    /* Create a object to help synchronize the threads */
+    /* Create an object to help synchronize the threads */
     private static final Object playSignal = new Object();
     /* this will store the details of the current song. */
     private Song currentSong;
-    /* Create a Player to handle the music using Jlayer library */
+    /* Create a Player to handle the music using JavaLayer library */
     private AdvancedPlayer advancedPlayer;
     private int pausedOnFrame = 0;
     public void setCurrentFrame(int frame){
@@ -25,6 +25,9 @@ public class MusicPlayer extends PlaybackListener {
     private int currentTimeInMillisecond;
     /* we need a reference to the GUI class to update the slider each millisecond of the song */
     private Music_Player_GUI MusicPlayerGUI;
+
+    private ArrayList<Song> playlist = new ArrayList<>();
+
     /* Constructor */
     public MusicPlayer(Music_Player_GUI MusicPlayerGUI){
         this.MusicPlayerGUI = MusicPlayerGUI;
@@ -37,6 +40,49 @@ public class MusicPlayer extends PlaybackListener {
         if(this.currentSong != null){
             playCurrentSong();
         }
+    }
+
+    public void loadPlaylist( File playlistFile){
+        this.playlist = new ArrayList<>();
+
+        /* Store the path into the arraylist */
+        try{
+            FileReader fileReader = new FileReader(playlistFile);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            /* read each line from the txt file */
+            String songPath;
+            while( (songPath = bufferedReader.readLine()) != null ){
+                /* create a song object*/
+                Song song = new Song(songPath);
+
+                /* Add the song to the path */
+                playlist.add(song);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        if(playlist.size() > 0 ){
+            /* Set the slider to value 0*/
+            MusicPlayerGUI.setSliderValue(0);
+
+            /* Update current song with the first one on the playlist */
+            this.currentSong = playlist.getFirst();
+            this.currentTimeInMillisecond = 0;
+
+            /* Start from the beginning frame  */
+            this.pausedOnFrame= 0;
+
+            /*Update GUI*/
+            MusicPlayerGUI.EnablePauseBtn();
+            MusicPlayerGUI.updateSongInfo(this.currentSong);
+            MusicPlayerGUI.updatePlaybackSlider(this.currentSong);
+
+            /* Start song */
+            playCurrentSong();
+        }
+
     }
 
     public void playCurrentSong(){
@@ -123,7 +169,7 @@ public class MusicPlayer extends PlaybackListener {
             }
             while(!isPaused){
                 try{
-                    /* Increse the current time in milli */
+                    /* Increase the current time in milli */
                     currentTimeInMillisecond++;
 
                     /* Calculate frame */
@@ -136,7 +182,7 @@ public class MusicPlayer extends PlaybackListener {
                     Thread.sleep(1);
                 }
                 catch (Exception e ){
-                    System.out.println("Couldn't interrup the Thread");
+                    System.out.println("Couldn't interrupt the Thread");
                     e.printStackTrace();
                 }
             }

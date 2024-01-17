@@ -27,7 +27,7 @@ public class Music_Player_GUI extends JFrame {
         /* Setting the window icon */
         try {
             /* Load the icon from the path */
-            Image icon = ImageIO.read( new File("src/main/MusicPlayer/assets/Icon.png"));
+            Image icon = ImageIO.read( new File("src/main/resources/Icon.png"));
             /* assign the image to the Frame */
             setIconImage(icon);
         }
@@ -167,7 +167,7 @@ public class Music_Player_GUI extends JFrame {
         return null;
     }
     private void setCover(){
-        JLabel canvas = new JLabel(loadImage("src/main/MusicPlayer/assets/Cover.png"));
+        JLabel canvas = new JLabel(loadImage("src/main/resources/Cover.png"));
         canvas.setBounds(0,20,getWidth(),300);
         canvas.setBackground(null);
         add(canvas);
@@ -246,14 +246,14 @@ public class Music_Player_GUI extends JFrame {
 
         /* Creating controls */
         /* Create List btn */
-        JButton list = new JButton(loadImage("src/main/MusicPlayer/assets/List.png"));
+        JButton list = new JButton(loadImage("src/main/resources/List.png"));
         list.setToolTipText("Playlist");
         list.setBorder(null);
         list.setBackground(null);
         list.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         /* Create rev btn */
-        JButton prev = new JButton(loadImage("src/main/MusicPlayer/assets/Prev.png"));
+        JButton prev = new JButton(loadImage("src/main/resources/Prev.png"));
         prev.setToolTipText("Prev. Song");
         prev.setBorder(null);
         prev.setBackground(null);
@@ -268,7 +268,7 @@ public class Music_Player_GUI extends JFrame {
         });
 
         /* Create pause btn */
-        pause = new JButton(loadImage("src/main/MusicPlayer/assets/Pause.png"));
+        pause = new JButton(loadImage("src/main/resources/Pause.png"));
         pause.setToolTipText("Pause.");
         pause.setBorder(null);
         pause.setBackground(null);
@@ -285,7 +285,7 @@ public class Music_Player_GUI extends JFrame {
         });
 
         /* Create play btn */
-        play = new JButton(loadImage("src/main/MusicPlayer/assets/Play.png"));
+        play = new JButton(loadImage("src/main/resources/Play.png"));
         play.setToolTipText("Play");
         play.setBorder(null);
         play.setBackground(null);
@@ -304,7 +304,7 @@ public class Music_Player_GUI extends JFrame {
         });
 
         /* Create Next btn */
-        JButton next = new JButton(loadImage("src/main/MusicPlayer/assets/Next.png"));
+        JButton next = new JButton(loadImage("src/main/resources/Next.png"));
         next.setToolTipText("Next Song");
         next.setBorder(null);
         next.setBackground(null);
@@ -319,7 +319,7 @@ public class Music_Player_GUI extends JFrame {
         });
 
         /* Create loop btn */
-        JButton loop = new JButton(loadImage("src/main/MusicPlayer/assets/Loop.png"));
+        JButton loop = new JButton(loadImage("src/main/resources/Loop.png"));
         loop.setToolTipText("Play in Loop");
         loop.setBorder(null);
         loop.setBackground(null);

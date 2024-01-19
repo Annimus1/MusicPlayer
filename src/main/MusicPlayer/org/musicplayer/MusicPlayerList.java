@@ -5,14 +5,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MusicPlayerList extends JDialog {
-    private MusicPlayer musicPlayer;
-    private Music_Player_GUI musicPlayerGui;
+    private final MusicPlayer musicPlayer;
+    private final Music_Player_GUI musicPlayerGui;
 
     private ArrayList<Song> playlist;
-    private Song SelectedSong;
     public MusicPlayerList(MusicPlayer musicPlayer, Music_Player_GUI musicPlayerGui){
         this.musicPlayer = musicPlayer;
         this.musicPlayerGui = musicPlayerGui;

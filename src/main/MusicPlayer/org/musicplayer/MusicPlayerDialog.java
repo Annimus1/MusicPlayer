@@ -108,11 +108,8 @@ public class MusicPlayerDialog extends JDialog {
                 }catch (Exception err) {
                     System.out.println(err);
                 }
-
-
             }
         });
         add(saveBtn);
     }
-
 }

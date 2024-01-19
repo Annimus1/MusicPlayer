@@ -17,7 +17,7 @@ public class MusicPlayer extends PlaybackListener {
     /* Create a Player to handle the music using JavaLayer library */
     private AdvancedPlayer advancedPlayer;
     private int pausedOnFrame = 0;
-    /* Controlls if the song play in a infinite loop*/
+    /* Controls if the song play in an infinite loop*/
     private boolean isloop;
     public boolean getIsLoop(){return this.isloop;}
     public void setCurrentFrame(int frame){
@@ -28,7 +28,7 @@ public class MusicPlayer extends PlaybackListener {
     /* Track how many milliseconds has passed since playing the song (used for update the slice) */
     private int currentTimeInMillisecond;
     /* we need a reference to the GUI class to update the slider each millisecond of the song */
-    private Music_Player_GUI MusicPlayerGUI;
+    private final Music_Player_GUI MusicPlayerGUI;
 
     private ArrayList<Song> playlist = new ArrayList<>();
     public ArrayList<Song> getPlaylist(){return this.playlist;}
@@ -68,7 +68,7 @@ public class MusicPlayer extends PlaybackListener {
             System.out.println(e);
         }
 
-        if(playlist.size() > 0 ){
+        if(!playlist.isEmpty()){
             /* Set the slider to value 0*/
             MusicPlayerGUI.setSliderValue(0);
 
@@ -210,7 +210,6 @@ public class MusicPlayer extends PlaybackListener {
            pausedOnFrame += (int) ( (double) evt.getFrame() * currentSong.getFrameRatePerMilliseconds());
         }
         else if(isloop){
-            System.out.println("La cancion termino");
             /* Stop the current song */
             this.isPaused = false;
             /* Restart the song */
@@ -267,8 +266,6 @@ public class MusicPlayer extends PlaybackListener {
 
             /* Start song */
             playCurrentSong();
-
-            System.out.println(playlist.indexOf(currentSong));
             return true;
         }
         return false;

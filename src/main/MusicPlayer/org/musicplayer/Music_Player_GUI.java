@@ -10,12 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Music_Player_GUI extends JFrame {
     public static final Color BACKGROUD_COLOR = Color.WHITE;
-    private JMenuItem loadSong;
     private MusicPlayer musicPlayer;
     public MusicPlayer getMusicPlayer(){return this.musicPlayer;}
     private JButton pause;
@@ -82,7 +80,7 @@ public class Music_Player_GUI extends JFrame {
         /* Create menu to upload a song */
         JMenu songMenu = new JMenu("Song");
         /* Create item*/
-        loadSong = new JMenuItem("Load song");
+        JMenuItem loadSong = new JMenuItem("Load song");
         loadSong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,7 +99,7 @@ public class Music_Player_GUI extends JFrame {
                     /* Create a new song */
                     Song song = new Song(filename.getPath());
                     /* Toggle buttons */
-                    togglePlayPause();
+                    EnablePauseBtn();
                     /* update Song info */
                     updateSongInfo(song);
                     /* Update slider */
@@ -168,8 +166,7 @@ public class Music_Player_GUI extends JFrame {
         fileChooser.setFileFilter( new FileNameExtensionFilter("MP3","mp3"));
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
-            File fileName = fileChooser.getSelectedFile();
-            return fileName;
+            return fileChooser.getSelectedFile();
         }
         return null;
     }
@@ -240,7 +237,7 @@ public class Music_Player_GUI extends JFrame {
                 /* Resume the song */
                 musicPlayer.playCurrentSong();
                 if(play.isVisible()){
-                    togglePlayPause();
+                    EnablePauseBtn();
                 }
             }
         });
@@ -297,7 +294,7 @@ public class Music_Player_GUI extends JFrame {
                  /* Pause Music */
                 musicPlayer.pauseMusic();
                 /* Toggle buttons*/
-                togglePlayPause();
+                EnablePlayBtn();
             }
         });
 
@@ -313,7 +310,7 @@ public class Music_Player_GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if(musicPlayer.getCurrentSong() != null ){
                 /* Toggle buttons*/
-                togglePlayPause();
+                EnablePauseBtn();
 
                 /* Play or resume song */
                 musicPlayer.playCurrentSong();
@@ -366,38 +363,40 @@ public class Music_Player_GUI extends JFrame {
         add(controls);
     }
 
-    private void togglePlayPause(){
-        pause.setVisible(!pause.isVisible());
-        play.setVisible(!play.isVisible());
-    }
-
     public void updateSongInfo(Song song){
         songTitle.setText((song.getTitle() != "") ? song.getTitle() : "Unknown");
         artist.setText((song.getArtist() != "") ? song.getArtist() : "Unknown");
     }
 
     public void updatePlaybackSlider(Song song){
-        /* update max count of the slider */
-        slider.setMaximum(song.getMp3File().getFrameCount());
+        try{
+            /* update max count of the slider */
+            slider.setMaximum(song.getMp3File().getFrameCount());
 
-        /* Create a song length label */
-        Hashtable<Integer,JLabel> labelTable = new Hashtable<>();
+            /* Create a song length label */
+            Hashtable<Integer,JLabel> labelTable = new Hashtable<>();
 
-        /* Begins in 00:00 */
-        JLabel begin = new JLabel("00:00");
-        begin.setFont(new Font("Dialog", Font.BOLD, 12));
+            /* Begins in 00:00 */
+            JLabel begin = new JLabel("00:00");
+            begin.setFont(new Font("Dialog", Font.BOLD, 12));
 
-        /* ends with song duration */
-        JLabel end = new JLabel(song.getDuration());
-        end.setFont(new Font("Dialog", Font.BOLD, 12));
+            /* ends with song duration */
+            JLabel end = new JLabel(song.getDuration());
+            end.setFont(new Font("Dialog", Font.BOLD, 12));
 
-        /* add values to the table */
-        labelTable.put(0,begin);
-        labelTable.put(song.getMp3File().getFrameCount(),end);
+            /* add values to the table */
+            labelTable.put(0,begin);
+            labelTable.put(song.getMp3File().getFrameCount(),end);
 
-        /* Add label to Slider */
-        slider.setLabelTable(labelTable);
-        slider.setPaintLabels(true);
+            /* Add label to Slider */
+            slider.setLabelTable(labelTable);
+            slider.setPaintLabels(true);
+        }catch (NullPointerException e){
+            this.musicPlayer.stopSong();
+            JOptionPane.showMessageDialog(this, "Unable to read metadata from the file. Program will finalize the actual task in order to prevent memory leaks.");
+            System.exit(1);
+        }
+
     }
 
     /* This will be used to update the slider*/

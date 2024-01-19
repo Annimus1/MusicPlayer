@@ -1,6 +1,5 @@
 package org.musicplayer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -24,16 +23,8 @@ public class MusicPlayerDialog extends JDialog {
         setLayout(null);
         setModal(true);
         setLocationRelativeTo(musicPlayerGui);
-
-        try {
-            /* Load the icon from the path */
-            Image icon = ImageIO.read( new File("src/main/MusicPlayer/assets/Icon.png"));
-            /* assign the image to the Frame */
-            setIconImage(icon);
-        }
-        catch(Exception e){
-            System.out.println("couldn't load the icon");
-        }
+        /* Setting app icon */
+        Music_Player_GUI.setWindowIcon(this);
 
         addComponents();
     }
@@ -43,7 +34,6 @@ public class MusicPlayerDialog extends JDialog {
         JPanel container = new JPanel();
         container.setBounds(10,10,380,300);
         container.setLayout(new BoxLayout(container,BoxLayout.Y_AXIS));
-        container.setBackground(Color.GRAY);
         add(container);
 
         /* Add btn */

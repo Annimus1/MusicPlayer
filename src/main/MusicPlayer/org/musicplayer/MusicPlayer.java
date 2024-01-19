@@ -31,6 +31,7 @@ public class MusicPlayer extends PlaybackListener {
     private Music_Player_GUI MusicPlayerGUI;
 
     private ArrayList<Song> playlist = new ArrayList<>();
+    public ArrayList<Song> getPlaylist(){return this.playlist;}
 
     /* Constructor */
     public MusicPlayer(Music_Player_GUI MusicPlayerGUI){
@@ -116,6 +117,7 @@ public class MusicPlayer extends PlaybackListener {
     }
 
     private int getPausedOnFrame(){ return this.pausedOnFrame; }
+
     public void pauseMusic(){
         if(advancedPlayer != null){
             isPaused = true;
@@ -124,6 +126,7 @@ public class MusicPlayer extends PlaybackListener {
             stopSong();
         }
     }
+
     public void stopSong(){
         if (advancedPlayer != null){
             advancedPlayer.stop();
@@ -194,6 +197,7 @@ public class MusicPlayer extends PlaybackListener {
             }
         }).start();
     }
+
     @Override
     public void playbackStarted(PlaybackEvent evt) {
         /* Called at the beginning of the song */
@@ -300,6 +304,32 @@ public class MusicPlayer extends PlaybackListener {
             return true;
         }
         return false;
+    }
+
+    public void setSongFromList(Song song){
+        /* stop the music */
+        stopSong();
+
+        /* Set the slider to value 0*/
+        MusicPlayerGUI.setSliderValue(0);
+
+
+        /* Update current song with the first one on the playlist */
+        this.currentSong = playlist.get(playlist.indexOf(song));
+
+        this.currentTimeInMillisecond = 0;
+
+        /* Start from the beginning frame  */
+        this.pausedOnFrame= 0;
+
+        /*Update GUI*/
+        MusicPlayerGUI.EnablePauseBtn();
+        MusicPlayerGUI.updateSongInfo(this.currentSong);
+        MusicPlayerGUI.updatePlaybackSlider(this.currentSong);
+
+        /* Start song */
+        playCurrentSong();
+        System.out.println(playlist.indexOf(currentSong));
     }
 }
 

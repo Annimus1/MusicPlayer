@@ -10,30 +10,37 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Music_Player_GUI extends JFrame {
     public static final Color BACKGROUD_COLOR = Color.WHITE;
     private JMenuItem loadSong;
     private MusicPlayer musicPlayer;
+    public MusicPlayer getMusicPlayer(){return this.musicPlayer;}
     private JButton pause;
     private JButton play;
         private final JLabel songTitle = new JLabel("Song Title");
     private final JLabel artist = new JLabel("Artist");
     private final JSlider slider = new JSlider();
 
-    public Music_Player_GUI(){
-        super("Music Player");
-        /* Setting the window icon */
+    public static void setWindowIcon(Window object){
         try {
             /* Load the icon from the path */
             Image icon = ImageIO.read( new File("src/main/resources/Icon.png"));
             /* assign the image to the Frame */
-            setIconImage(icon);
+            object.setIconImage(icon);
         }
         catch(Exception e){
-            System.out.println("Couldn't load the icon");
+            System.out.println("couldn't load the icon");
         }
+    }
+
+    public Music_Player_GUI(){
+        super("Music Player");
+        /* Setting app icon */
+        Music_Player_GUI.setWindowIcon(this);
+
         setSize(400,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -251,6 +258,16 @@ public class Music_Player_GUI extends JFrame {
         list.setBorder(null);
         list.setBackground(null);
         list.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        list.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if(!Music_Player_GUI.this.musicPlayer.getPlaylist().isEmpty()){
+                    new MusicPlayerList(Music_Player_GUI.this.getMusicPlayer(), Music_Player_GUI.this)
+                        .setVisible(true);
+                }
+            }
+        });
 
         /* Create rev btn */
         JButton prev = new JButton(loadImage("src/main/resources/Prev.png"));

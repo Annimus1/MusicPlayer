@@ -1,4 +1,4 @@
-package org.musicplayer;
+package com.musicplayer;
 
 import com.mpatric.mp3agic.Mp3File;
 import org.jaudiotagger.audio.AudioFile;

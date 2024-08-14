@@ -1,4 +1,4 @@
-package org.musicplayer;
+package com.musicplayer;
 
 /**
  * @author Pablo vergara

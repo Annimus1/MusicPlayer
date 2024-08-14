@@ -1,4 +1,4 @@
-package org.musicplayer;
+package com.musicplayer;
 
 import javax.swing.*;
 import java.awt.*;

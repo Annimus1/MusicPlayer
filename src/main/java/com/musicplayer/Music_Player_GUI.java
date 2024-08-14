@@ -1,4 +1,4 @@
-package org.musicplayer;
+package com.musicplayer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

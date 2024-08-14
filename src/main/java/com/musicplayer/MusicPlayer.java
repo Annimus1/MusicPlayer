@@ -1,4 +1,4 @@
-package org.musicplayer;
+package com.musicplayer;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
@@ -64,6 +64,7 @@ public class MusicPlayer extends PlaybackListener {
                 /* Add the song to the path */
                 playlist.add(song);
             }
+            bufferedReader.close();
         }catch (Exception e){
             System.out.println(e);
         }
@@ -73,7 +74,7 @@ public class MusicPlayer extends PlaybackListener {
             MusicPlayerGUI.setSliderValue(0);
 
             /* Update current song with the first one on the playlist */
-            this.currentSong = playlist.getFirst();
+            this.currentSong = playlist.get(0);
             this.currentTimeInMillisecond = 0;
 
             /* Start from the beginning frame  */
@@ -249,7 +250,7 @@ public class MusicPlayer extends PlaybackListener {
 
             if(playlist.indexOf(this.currentSong)+1 >= playlist.size()){
                 /* Update current song with the first one on the playlist */
-                this.currentSong = playlist.getFirst();
+                this.currentSong = playlist.get(0);
             }else{
                 /* Update current song with the first one on the playlist */
                 this.currentSong = playlist.get(playlist.indexOf(currentSong)+1);
@@ -281,7 +282,7 @@ public class MusicPlayer extends PlaybackListener {
 
             if(playlist.indexOf(this.currentSong)-1 < 0){
                 /* Update current song with the first one on the playlist */
-                this.currentSong = playlist.getLast();
+                this.currentSong = playlist.get(playlist.size() - 1);
             }else{
                 /* Update current song with the first one on the playlist */
                 this.currentSong = playlist.get(playlist.indexOf(currentSong)-1);

@@ -88,7 +88,7 @@ public class MusicPlayer extends PlaybackListener {
             /* Start song */
             playCurrentSong();
 
-            System.out.println(playlist.indexOf(currentSong));
+            // System.out.println(playlist.indexOf(currentSong));
         }
 
     }
@@ -147,7 +147,6 @@ public class MusicPlayer extends PlaybackListener {
                         playSignal.notify();
                     }
 
-                    System.out.println("isPaused: "+ isPaused);
                     /* Resume music */
                     advancedPlayer.play(getPausedOnFrame(),Integer.MAX_VALUE);
 
@@ -224,7 +223,7 @@ public class MusicPlayer extends PlaybackListener {
     public void toggleLoop(){
         if(currentSong != null) {
             this.isloop = !this.isloop;
-            System.out.println(this.isloop);
+            // System.out.println(this.isloop);
         }else{
             this.isloop = false;
         }
@@ -327,7 +326,7 @@ public class MusicPlayer extends PlaybackListener {
 
         /* Start song */
         playCurrentSong();
-        System.out.println(playlist.indexOf(currentSong));
+        // System.out.println(playlist.indexOf(currentSong));
     }
 }
 

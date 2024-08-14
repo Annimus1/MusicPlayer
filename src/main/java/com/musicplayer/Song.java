@@ -30,7 +30,7 @@ public class Song{
             /* Read the tags in the mp3 file */
             Tag tag = audioFile.getTag();
 
-            System.out.println(tag);
+            // System.out.println(tag);
 
             if (tag != null){
                 this.title = (tag.getFirst(FieldKey.TITLE) != null || tag.getFirst(FieldKey.TITLE) == "") ?  tag.getFirst(FieldKey.TITLE) : "Unknown";
